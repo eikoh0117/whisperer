@@ -48,7 +48,6 @@ button
   border-radius 3px
   background white
 </style>
-
 <script>
 import Header from "@/components/Header";
 export default {

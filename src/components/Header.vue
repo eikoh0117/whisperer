@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { db } from "../main";
 import firebase from "firebase";
 import { auth } from "../main";
 export default {
@@ -38,6 +39,7 @@ export default {
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider).then((result) => {
         alert("Hello, " + result.user.displayName + "!");
+        this.createUser(result.user);
       });
     },
     signOut() {
@@ -47,6 +49,18 @@ export default {
           this.$router.push("/"), location.reload();
         });
       }
+    },
+    createUser(user) {
+      db.collection("users")
+        .doc(user.uid)
+        .set(
+          {
+            name: user.displayName,
+            photoURL: user.photoURL,
+            email: user.email,
+          },
+          { merge: true }
+        );
     },
   },
 };

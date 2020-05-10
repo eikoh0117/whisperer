@@ -10,7 +10,16 @@
       <p class="user-name">{{ user.name }}</p>
       <!-- ここを変更 -->
     </div>
-    <div class="content" v-html="whisper.content"></div>
+    <div v-if="editing" class="editor">
+      <textarea
+        v-model="whisper.content"
+        placeholder="edit whisper"
+        @keypress.enter="updateWhisper"
+      >
+      </textarea>
+      <p class="message">Press Enter to Whisper</p>
+    </div>
+    <div v-else class="content" v-html="whisper.content"></div>
     <button
       v-if="currentUser && currentUser.uid == user.id"
       @click="showBtns = !showBtns"
@@ -18,6 +27,7 @@
       <fa icon="ellipsis-v" />
     </button>
     <div v-if="showBtns" class="controls">
+      <li @click="editing = !editing">edit</li>
       <li @click="deleteWhisper" style="color: red">
         delete
       </li>
@@ -37,6 +47,7 @@ export default {
       user: {},
       currentUser: {},
       showBtns: false,
+      editing: false,
     };
   },
   created() {
@@ -57,6 +68,19 @@ export default {
           .doc(this.$props.id)
           .delete();
       }
+    },
+    updateWhisper() {
+      const date = new Date();
+      db.collection("whispers")
+        .doc(this.whisper.id)
+        .set(
+          {
+            content: this.whisper.content,
+            date: date,
+          },
+          { merge: true }
+        )
+        .then((this.editing = false));
     },
   },
 };

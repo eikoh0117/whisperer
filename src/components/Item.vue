@@ -63,4 +63,28 @@ export default {
       width 50px
   .content
     padding 10px
+  .editor
+      position relative
+      width 100%
+      textarea
+        background transparent
+        resize none
+        height 80px
+        width 96%
+        border none
+        padding 10px 2%
+        font-size .9rem
+        font-weight lighter
+        &:focus
+          outline none
+      .message
+        opacity 0
+        position absolute
+        bottom 5px
+        right 10px
+        transition .2s
+        font-size .8rem
+      &:hover
+        .message
+          opacity 1
 </style>

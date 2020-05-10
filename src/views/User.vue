@@ -12,6 +12,7 @@
       </div>
     </div>
     <div class="list">
+      <Editor :currentUser="currentUser" />
       <Item
         v-for="whisper in orderBy(myWhispers, 'date', -1)"
         :key="whisper.id"
@@ -22,19 +23,24 @@
   </div>
 </template>
 <script>
+import { auth } from "../main";
 import { db } from "../main";
 import firebase from "firebase";
 import Item from "@/components/Item";
+import Editor from "@/components/Editor";
+
 import Vue2Filters from "vue2-filters";
 
 export default {
   components: {
     Item,
+    Editor,
   },
   data() {
     return {
       user: {},
       myWhispers: [],
+      currentUser: {},
     };
   },
   firestore() {
@@ -44,6 +50,11 @@ export default {
         .collection("whispers")
         .where("uid", "==", this.$route.params.uid),
     };
+  },
+  created() {
+    auth.onAuthStateChanged((user) => {
+      this.currentUser = user;
+    });
   },
   mixins: [Vue2Filters.mixin],
 };
